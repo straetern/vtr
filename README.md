@@ -1,2 +1,176 @@
 # vtr
 VIC-20 Tape Reader
+
+ ===============================
+     VTR 0.1a - Documentation
+ -------------------------------
+
+     VTR = VIC20-Tape Reader
+     
+  by Nikolaus Strater, Exeter UK
+
+ nstrater@mcmail.com, 10/10/1997
+ ===============================
+
+
+Note: This program is freeware. You are using it at your own risk. Under no account can the author be held responsible for any damage to your computer system resulting from its use.
+
+
+Version Note: The first copies had no version number, and contained two limitations. Buffer-size, which should now allow loading of files up to 24k - not tried by myself, since my own machine never had more than the initial 3.5k!; and filled-up error- or data-buffers are ignored, so tape-searching is not aborted - not usually critical, since buffers should never fill up anyway during normal execution.
+
+Note2: Yet another last minute change: If you get the blue & cyan bits, but not the proper pattern, your cable might be differently connected to mine.
+Instead of having to change your cable, try using the program with 3rd option, a minus sign: '-', ie: 'vtr 1 0 -', for example. (This simply inverts the signal as seen by the program, since the algorithm is sensitive to the signal direction.)
+
+-------------------------------------------------------------------------------------------
+
+
+Contents: 0) Intro, 1) Installing, 2) Setup, 3) Preparing, 4) Running, 5) Details, 6) About the Program , 7) The End;
+
+
+0) Introduction
+
+This is a program to read software-tapes recorded by the VIC20 (using the special C2N-tape unit that you had to buy for it back then) via a Soundblaster-compatible card into an IBM PC compatible computer.
+
+In case you don't know, the Commodore VIC20 was a personal computer of the early 80s, with just 3.5kB of free Ram and 22 characters across the screen, but if that is news to you, what are you doing reading this anyway? :-).
+
+The number of people out there still doing stuff with their VIC20s must be vanishingly small. Of course, there are still some sites on the net, lovingly maintained by undying devotees of the VIC20! But the VIC20 was never as big a thing as the Commodore 64 or the Spectrum, so its followers are largely being drowned out by the surprisingly large retro-groups for these other computers.
+Also, even for the retro-fanatics, all the software that was ever written for this little computer is now somewhere on the net, in freeware form.
+It follows that the number of people who want to read their old tapes into the PC must be around 2 to 3 maximum on the entire globe! What on earth did I write this program for then?
+
+Well, it's my first slightly longer PC coding project, and was an interesting problem. It also just happened to be the first thing I wanted to do with my PC. To transfer all my old VIC20 tapes, now over 15 years old (recorded in 1982!), into PC-form. There's nothing really important on there - but so many memories are associated with those first computing experiments.
+So it's all just sentimental value really.
+
+Also, since Boris van Schooten has written his really superb VIC20-emulator, just over a year back now, and currently available from his site, there was an added incentive to have a look at all those old (but beautiful) little programs again.
+
+The program has worked fine for all my five tapes, but has currently only been run on my own IBM PC compatible computer system (Pentium 120, Soundblaster16 plug&play card, Windows95).
+
+
+1) Installing
+
+All the 11 files are in one .zip-file, including this documentation. Unzip into a directory of your choice (for example: \vtr). Only one file, vtr.com, is required to run the program.
+
+ vtr.com    - the tape reader program,
+ vtr.txt    - this documentation,
+  *.asm     - the 9 assembler source-files.
+
+
+2) The setup
+
+Apart from the sound card inside the PC, you'll need a tape-recorder (or rather: a player! - I used a standard stereo-tape-system) and a cable, connecting the headphones-output from the tape-recorder to the 'line-in' socket of the soundcard, at the back of the PC. 
+You can easily make a cable yourself, if you haven't got one. Just connect equivalent contacts of the two jack-plugs together: left channel to left channel, right to right and ground to ground. The program uses only one of the channels though. (In my card this is the left channel, the metal bit at the tip of the stereo jack plug, but internal connections may vary, so it's best to connect both channels).
+
+
+3) Preparing
+
+Set the volume very low, before you connect the cable up, so as not to damage the soundcard's input stage.
+
+Put the tape in, rewinding to start, or, if you have to start in the middle somewhere, make sure you are inside a leader tone (by listening to it: the leader tone is a high-pitched, clear, continuous one). 
+Although the program will usually work ok once it's read in the first header, it may mess up if it's started inside a signal. If you keep getting gobbledigook repeatedly in the filenames, just try again.
+
+The program (vtr.exe) can be run from Windows95, in full screen mode, either by double-clicking on vtr.com directly (but this won't save anything, but display only), or by using Windows95's Run-command, giving the required options, eg: C:\vtr\vtr 1 1 will save files on disc with graphics on.
+Sometimes however the program will exit for unknown reasons under Windows. If this happens, do a shutdown into 'MSDOS mode', and start the program from the command line. (If the programs drops out here as well, try restarting the computer and going from Windows directly to DOS, and then running, without trying to start the program in Windows beforehand.)
+
+(If you have a plug & play sound card, like me, then you need to run Windows95 (or some other plug&play configuration manager) before you start the program, because my program won't set up the plug&play bit.)
+
+Also, I've taken out the Soundblaster-reset routine since I'm not sure how compatible it is with other not-quite-so-compatible sound-boards. If you get no response at all from the program, try running something that uses your sound card first, which should set it up. (Windows95 certainly seems to do it ok.)
+
+
+4) Running
+
+Do 'vtr' at the DOS prompt. The screen will go black, and you can see a little red dot racing along the screen. (Turn up the contrast/brightness to see it.) This is the 'eye' of the program searching the tape, so to speak. Black means 'no signal'. 
+Press play and wait until there is some signal on the tape (turn up the volume if it's all black or just cyan) at which time there should appear first a continuous blue (the sync-signal/leader tone) and then vertical violet stripes with green between them - the data. If you get a pattern with many red dots in it, the volume is too high. Decrease the volume until no more red is visible.
+
+The pattern of vertical violet stripes with green in-between should be unbroken. If you get black bits here and there, there are still read errors. Experiment with the volume (although lower is better than too high).  Also, if your stereo has a graphic equaliser, experiment with that. I found it to be best to boost lower frequencies and keep the higher frequencies at middle setting, but you should try it out for yourself.
+
+The file's name will appear as soon as a header has been read, followed some time later (once the body has also been read) by the full info on a single line, as detailed in section (4) below. If the penultimate single-digit number on this line is anything but 0 (ie. 1, 2 or 3), the file will have saved all right.
+
+Doing vtr on its own will not save anything. 
+To save without graphics, do 'vtr 0 1'. The program will ask for a 'tape-name' which the program uses as a directory name, created in the current directory. Into this directory will go the files read off the tape in the standard .bin-format (the raw file data, preceded by the low-byte and high-byte of the start-address), provided there were no unresolvable errors in reading the file. If the read-errors could not be resolved, the program will save a salvage file (without the bin-ending, and 40k or so in size), containing the locations of any parity and read-errors.
+
+The .bin-files can then be loaded into an emulator, eg. Boris van Schooten's very fine one. Incidentally, if you do use Boris' emulator, don't forget to escape back to the options screen and do 'Undelete' before listing or running the program. I wish he'd put in some easier way to load and run programs, but there you are.
+
+The program also constructs a save-log with all the info on each file in it.
+Each file is saved as a 2-digit hex-number. Using the filenames in the save-log, the user can rename these files as required.
+
+If a data block is encountered without a preceding header, or the header was corrupt, the file is still saved in the bin-format (provided the data itself was ok), but using the most common start address 1001h. If there was no header, a star & a following space appear in the file-name. If there was a corrupt header, the filename is read as usual, but may appear with funny characters or question marks in it. Any control characters encountered in the filename are replaced by question marks.
+
+Execution can be stopped by pressing the right mouse button while in the black no-signal region. The button is ignored however while data is being read, to ensure the routine executes fast enough on the slowest of PCs, so as not to lose any samples. To make sure there's no signal just press Stop on the tape recorder.
+
+
+5) Details
+
+The options, if given, are 2 or 3 seperate, single characters, which must be spaced exactly as shown (since I omitted a parser!):
+
+ vtr X Y Z
+
+ X = 0/1 =graphics on/off  - default on;
+ Y = 0/1 =saving on/off - default on;
+ Z = - (minus sign) = if given, the signal is inverted - only use, if the blue & cyan bits appear unbroken, but the violet/green-pattern refuses to emerge;
+
+So, the possible choices are:
+
+ vtr 1 0 = same as vtr on its own: graphics on, but no saving,
+ vtr 0 0 = no graphics, no saves,
+ vtr 0 1 = graphics off, saving on,
+ vtr 1 1 = grraphics on, saving on.
+
+ vtr 1 0 -  = graphics on, no saving, signal inverted;
+
+Colour-coding used in the graphics display:
+
+black=no signal, cyan=searching for the sync-signal, blue=the sync-signal itself, magenta(violet)=start-bit, green=data-bits, red=volume too high.
+
+
+The file-info, as printed out during reading, or in the save-log has the following format:
+
+  NN H T xxxxxxxxxxxxxxxx SSSS LLLL D KKKK
+
+ NN = file number
+ H = header-ok flag: 1=ok, 0=corrupt, (1st block tested only),
+ T = file type: P=prg, S=seq, C=Char.set data(?), X=unidentifed, ie: header corrupt;
+ xxx.. = filename, 16 chars,
+ SSSS = start adress, given in header,
+ LLLL = length, calculated from header,
+ D = data-ok flag: 0 = corrupt, 1 = 1st block ok & 2nd corrupt, 2 = 2nd clear & 1st corrupt, 3 = both blocks ok,
+ KKKK = actual length saved (longer than LLLL if salvaged).
+
+All numbers are in hexadecimal.
+
+
+The file-type: VIC20-files come in 2 basic flavours: 'prg', the usual one used for programs, and 'seq', used for sequential-access to data. 
+The latter is saved in a number of blocks. Currently the program just saves each block seperately, in normal .bin-format, with the start address being the same one (the one given in the initial header) in each block. Saving the whole as one file would make more sense. Maybe in a future edition (unlikely ;-).
+There is also a third file-type, used, I think, for Character sets; it has the number 3 following the header count-down sequence (instead of 1 for prg & 2 for seq), and is indicated here by the letter 'C'.
+
+The program operates the Soundblaster card in 'direct mode', ie. no fixed sampling rate is set. Sampling will be as fast as the card allows. Mine worked at 22kHz, 8-bit mono resolution. 
+I don't know how much lower a rate will still give satisfactory signal quality.
+
+Execution errors:
+
+The program exits with a single error-letter. A for abort, F for file-error, C for a file-error while closing the save-log. It also prints out the return address near which the error-branch occurred.
+
+
+6) About the program
+
+I'm a beginner in 86-code, so there'll be lots of inefficiencies lurking about. Also I was writing mainly to try out various things, like the buffer-handling routines which really only slow the reading loop down, but which I wanted to see working.
+
+Assembly was done using the A86-assembler by Eric Isaacson. As far as I know the only more specific feature of this assembler, used throughout, is the implicit hexadecimal number base indicated by a preceding '0' (eg. 010 = 10h =16).
+
+The graphics output was mainly done to keep track of what is going on in the program while data is being read. Also it needed to be fast so as not to affect the sampling - hence the direct screen access.
+
+The central routine is fndrdblk which searches for and reads in a single VIC20-block of tape-data (header or data), of which there are always 4 in each file (2 identical ones for the header and 2 for the file-body).
+It first of all detects turning-points (dettp) , then calculates (a subtraction, in tpdif) the 'size of the swing' (tpd), ie. the peak-to-peak value between two successive turning-points, and finally calculates the ratio (a division, in idrat) between two successive swings. Equality means it's a sync-signal, greater or less means either start-bit or data-bit. Simple!
+
+The great beauty of this algorithm is that no absolute timing-values are used, ie. it does not need to check for example how many samples occur within a tone-cycle. Also no absolute amplitudes are used (except in the volume-check, but this has nothing to do with identifying the signal). So it should work with any amplitude (provided no clipping takes place) and any sample-rate (provided no distortion of the wave-form takes place by too low a rate). The amplitude-offset, the amplitude itself as well as the speed of the tape-recorder may all change to some extent without affecting the readout.
+
+Parity-checking is done and any errors are saved in a table. Also, all 'reset'-errors (ie. format-violations, usually due to dirty tapes) are saved in a similar table. The program only checks the first header block so far (which is usually ok) and finds the clear block of the two blocks in the file-body. No parity-'sieving' (ie. checking parity errors in the two blocks against each other, & choosing the best data) is yet done - I don't think it's really worth it, since there never seem to be any parity erros! (as long as the data actually reads in ok). 
+All of my own files read in completely, except for one corrupt header at the start of one tape which resulted in an erroneous filename (but the file itself was still ok).
+
+
+7) The End.
+
+Just hope it works. Contact me (email above) if you have any problems.
+
+That's all folks!!!
+
+
+Nikolaus Strater, Exeter UK
